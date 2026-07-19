@@ -1,4 +1,5 @@
-rule_id,drug_name,drug_class,min_age,category,severity,action,rationale,source_name,source_year
-BEERS001,diazepam,Benzodiazepine,65,Avoid,High,Avoid use,Increased risk of falls and cognitive impairment,AGS Beers Criteria,2023
-BEERS002,zolpidem,Z-drug,65,Avoid,Moderate,Avoid routine use,Associated with delirium and falls,AGS Beers Criteria,2023
-BEERS003,glyburide,Sulfonylurea,65,Avoid,High,Avoid use,High risk of prolonged hypoglycemia,AGS Beers Criteria,2023
+rule_id,rule_type,drug_name,drug_class,min_age,max_crcl,category,severity,action,rationale,source_name,source_year
+BEERS001,drug_age,diazepam,Benzodiazepine,65,,Avoid,High,Avoid use,Increased risk of falls and cognitive impairment,AGS Beers Criteria,2023
+BEERS002,drug_age,zolpidem,Z-drug,65,,Avoid,Moderate,Avoid routine use,Associated with delirium and falls,AGS Beers Criteria,2023
+BEERS003,drug_age,glyburide,Sulfonylurea,65,,Avoid,High,Avoid use,High risk of prolonged hypoglycemia,AGS Beers Criteria,2023
+RENAL001,drug_renal,gabapentin,Gabapentinoid,,60,Renal dose review,Moderate,Review dose and dosing interval based on renal function,Reduced renal clearance may increase gabapentin exposure,FDA Prescribing Information,2025
