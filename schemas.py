@@ -3,6 +3,22 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 
+RuleType = Literal[
+    "drug_age",
+    "drug_renal",
+    "drug_condition",
+    "drug_drug",
+    "duplicate_therapy",
+]
+
+SeverityLevel = Literal[
+    "low",
+    "moderate",
+    "high",
+    "critical",
+]
+
+
 class Medication(BaseModel):
     name: str = Field(..., min_length=1)
     dose: str | None = None
@@ -23,6 +39,39 @@ class PatientCase(BaseModel):
     conditions: list[str] = Field(default_factory=list)
     medications: list[Medication] = Field(default_factory=list)
     labs: Labs = Field(default_factory=Labs)
+
+
+class RuleMatch(BaseModel):
+    """
+    Standardized output produced by the deterministic rule engine.
+
+    RuleMatch represents a matched clinical safety rule before the
+    result is transformed into the final user-facing review.
+    """
+
+    rule_id: str = Field(..., min_length=1)
+    rule_type: RuleType
+    severity: SeverityLevel
+
+    medication_names: list[str] = Field(
+        ...,
+        min_length=1,
+    )
+
+    matched_conditions: list[str] = Field(
+        default_factory=list,
+    )
+
+    category: str = Field(..., min_length=1)
+    rationale: str = Field(..., min_length=1)
+    recommended_action: str = Field(..., min_length=1)
+
+    monitoring: str | None = None
+
+    source_name: str = Field(..., min_length=1)
+    source_year: int = Field(..., ge=1900, le=2100)
+
+    human_review_required: Literal[True] = True
 
 
 class MedicationSafetyFinding(BaseModel):
