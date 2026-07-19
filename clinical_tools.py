@@ -1,5 +1,6 @@
 from typing import Any
 
+from rule_engine import check_geriatric_medication_risk
 from schemas import PatientCase
 
 
@@ -86,86 +87,6 @@ def calculate_patient_creatinine_clearance(
     )
 
 
-from csv import DictReader
-from pathlib import Path
-
-DEFAULT_RULES_PATH = (
-    Path(__file__).resolve().parent
-    / "data"
-    / "medication_rules.csv"
-)
-
-
-def load_medication_rules(
-    rules_path: Path = DEFAULT_RULES_PATH,
-) -> list[dict[str, str]]:
-    """
-    Load evidence-based medication safety rules from CSV.
-    """
-    if not rules_path.exists():
-        raise FileNotFoundError(
-            f"Medication rules file not found: {rules_path}"
-        )
-
-    with rules_path.open(
-        mode="r",
-        encoding="utf-8-sig",
-        newline="",
-    ) as csv_file:
-        return list(DictReader(csv_file))
-
-
-def check_geriatric_medication_risk(
-    patient: PatientCase,
-    rules_path: Path = DEFAULT_RULES_PATH,
-) -> list[dict[str, Any]]:
-    """
-    Match a patient's medications against age-based geriatric
-    medication safety rules.
-
-    This function performs deterministic rule matching only.
-    It does not independently make treatment decisions.
-    """
-    rules = load_medication_rules(rules_path)
-    findings: list[dict[str, Any]] = []
-
-    for medication in patient.medications:
-        normalized_name = medication.name.strip().lower()
-
-        for rule in rules:
-            rule_drug_name = rule["drug_name"].strip().lower()
-            minimum_age = int(rule["min_age"])
-
-            if (
-                normalized_name == rule_drug_name
-                and patient.age >= minimum_age
-            ):
-                findings.append(
-                    {
-                        "rule_id": rule["rule_id"],
-                        "medication": {
-                            "name": medication.name,
-                            "dose": medication.dose,
-                            "frequency": medication.frequency,
-                        },
-                        "drug_class": rule["drug_class"],
-                        "category": rule["category"],
-                        "severity": rule["severity"],
-                        "recommended_action": rule["action"],
-                        "rationale": rule["rationale"],
-                        "evidence": {
-                            "source_name": rule["source_name"],
-                            "source_year": int(
-                                rule["source_year"]
-                            ),
-                        },
-                        "human_review_required": True,
-                    }
-                )
-
-    return findings
-
-
 def review_patient_case(
     patient: PatientCase,
 ) -> dict[str, Any]:
@@ -173,7 +94,6 @@ def review_patient_case(
     Perform a deterministic medication review by combining
     renal assessment and geriatric medication screening.
     """
-
     renal_assessment = calculate_patient_creatinine_clearance(
         patient
     )

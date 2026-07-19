@@ -92,10 +92,10 @@ def test_flags_listed_medication_for_older_adult():
     findings = check_geriatric_medication_risk(patient)
 
     assert len(findings) == 1
-    assert findings[0]["rule_id"] == "BEERS001"
-    assert findings[0]["medication"]["name"] == "Diazepam"
-    assert findings[0]["severity"] == "High"
-    assert findings[0]["human_review_required"] is True
+    assert findings[0].rule_id == "BEERS001"
+    assert findings[0].medication_names == ["Diazepam"]
+    assert findings[0].severity == "high"
+    assert findings[0].human_review_required is True
 
 
 def test_does_not_apply_rule_below_minimum_age():
@@ -174,10 +174,10 @@ def test_flags_listed_medication_for_older_adult():
     findings = check_geriatric_medication_risk(patient)
 
     assert len(findings) == 1
-    assert findings[0]["rule_id"] == "BEERS001"
-    assert findings[0]["medication"]["name"] == "Diazepam"
-    assert findings[0]["severity"] == "High"
-    assert findings[0]["human_review_required"] is True
+    assert findings[0].rule_id == "BEERS001"
+    assert findings[0].medication_names == ["Diazepam"]
+    assert findings[0].severity == "high"
+    assert findings[0].human_review_required is True
 
 
 def test_does_not_apply_rule_below_minimum_age():
